@@ -1,4 +1,7 @@
 
+import os
+
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import requests
 from langchain_core.runnables import RunnableConfig
@@ -8,12 +11,21 @@ from socials_leads_agent.social_agent_v10 import graph, normalize_query  # Assum
 
 app = Flask(__name__)
 
+load_dotenv()
 
-codestreaks_user_token = "IGAAb1e5fjArxBZAE9VR25aQnhDOHZAvcmVpODBaSGQ5VUd2WW1DUmFIN1oySy1oak40UGxOZADVEbG5ibnRnR1cteGdraDFmWW9PUURuaEJ4WXJxZAEhFN29BWFVtMzRHX054Vm9JY09ldzNlLWFQbVZA3clhTbFJ6Q0NYZA2ZACaGJBNAZDZD"
-IG_PAGE_ACCESS_TOKEN = "EAAUIuz7UXk4BPE99e0rKZCMVLgUGmCX3EZCNaUikyaAhWbob6hw5Ion8BcN3ZAgM8ZAcuGOzOLSXq6cCakeyOnaJJZADJfcHh7FTKCZAy1SDaHf5f6ZAWEWcv10ZB2mxQrlpz9HsKJHMvJF9fxyV6o22sg1GvYfBNmowZCS7RTFx4Cp6qBZAlbEZCZAwDef2WgYqAcJjcsnTCQJYgGgaTPFoN43ajzVS2pxLNQku"
-VERIFY_TOKEN = "12345678"
-PAGE_ID = "705096629359008"
-IG_SCOPED_USER_ID = 17841404219800880
+
+def require_env_var(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"{name} environment variable is required but missing.")
+    return value
+
+
+codestreaks_user_token = require_env_var("CODESTREAKS_USER_TOKEN")
+IG_PAGE_ACCESS_TOKEN = require_env_var("IG_PAGE_ACCESS_TOKEN")
+VERIFY_TOKEN = require_env_var("VERIFY_TOKEN")
+PAGE_ID = require_env_var("PAGE_ID")
+IG_SCOPED_USER_ID = require_env_var("IG_SCOPED_USER_ID")
 
 seen_mids = set()
 
